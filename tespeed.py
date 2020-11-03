@@ -7,7 +7,8 @@ import argparse
 args=argparse.Namespace()
 args.suppress=None
 args.store=None
-
+import gzip
+import StringIO
 from SocksiPy import socks
 import socket
 
@@ -408,7 +409,11 @@ class TeSpeed:
             sys.exit(1)
 
         # Load etree from XML data
-        servers_xml = etree.fromstring(response.read())
+        data = StringIO(response.read())
+        gzipper = gzip.GzipFile(fileobj=data)
+        html = gzipper.read()
+        servers_xml = etree.fromstring(html)
+
         servers=servers_xml.find("servers").findall("server")
         server_list=[]
 
